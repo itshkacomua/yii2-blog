@@ -10,7 +10,7 @@ class Module extends \yii\base\Module
     /**
      * {@inheritdoc}
      */
-    public $controllerNamespace = 'common\modules\blog\controllers';
+    public $controllerNamespace = 'itshkacomua\blog\controllers';
     public $defaultRoute = 'blog';
 
     /**

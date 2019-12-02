@@ -6,7 +6,7 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
 /**
- * TagSearch represents the model behind the search form of `common\modules\blog\models\Tag`.
+ * TagSearch represents the model behind the search form of `itshkacomua\blog\models\Tag`.
  */
 class TagSearch extends Tag
 {

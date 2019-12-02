@@ -1,6 +1,6 @@
 <?php
 
-use common\modules\blog\models\Blog;
+use itshkacomua\blog\models\Blog;
 use yii\helpers\Html;
 use yii\grid\GridView;
 use yii\widgets\Pjax;

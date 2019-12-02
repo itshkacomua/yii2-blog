@@ -1,7 +1,7 @@
 <?php
 
-use common\modules\blog\models\Blog;
-use common\modules\blog\models\Tag;
+use itshkacomua\blog\models\Blog;
+use itshkacomua\blog\models\Tag;
 use kartik\file\FileInput;
 use kartik\select2\Select2;
 use yii\helpers\Html;
