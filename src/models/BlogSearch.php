@@ -10,6 +10,8 @@ use yii\data\ActiveDataProvider;
  */
 class BlogSearch extends Blog
 {
+    public $tag_name;
+
     /**
      * {@inheritdoc}
      */
@@ -17,7 +19,7 @@ class BlogSearch extends Blog
     {
         return [
             [['id', 'status_id', 'sort'], 'integer'],
-            [['title', 'text', 'alias'], 'safe'],
+            [['title', 'text', 'alias', 'tag_name'], 'safe'],
         ];
     }
 
@@ -39,7 +41,7 @@ class BlogSearch extends Blog
      */
     public function search($params)
     {
-        $query = Blog::find();
+        $query = Blog::find()->joinWith('tags');
 
         // add conditions that should always apply here
 
@@ -52,6 +54,14 @@ class BlogSearch extends Blog
                 'defaultOrder' => [
                     'id' => SORT_DESC,
                 ],
+                /*'attributes' => [
+                    'tag_name' => [
+                        'asc' => ['first_name' => SORT_ASC],
+                        'desc' => ['first_name' => SORT_DESC],
+                        'default' => SORT_DESC,
+                        'label' => 'Name',
+                    ]
+                ],*/
             ],
         ]);
 
@@ -72,6 +82,7 @@ class BlogSearch extends Blog
 
         $query->andFilterWhere(['like', 'title', $this->title])
             ->andFilterWhere(['like', 'text', $this->text])
+            ->andFilterWhere(['like', 'tag.name', $this->tag_name])
             ->andFilterWhere(['like', 'alias', $this->alias]);
 
         return $dataProvider;

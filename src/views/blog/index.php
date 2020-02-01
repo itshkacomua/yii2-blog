@@ -36,8 +36,8 @@ $this->params['breadcrumbs'][] = $this->title;
             'alias:url',
             ['attribute' => 'status_id', 'filter' => function($model){return $model->getStatusList;},'value'=>function($model){
                 return $model->statusName;//'statusName'
-            }],
-            ['attribute' => 'tags', 'value' => 'tagsAsString'],
+            }, 'filter' => Blog::STATUS_LIST],
+            ['attribute' => 'tag_name', 'value' => 'tagsAsString'],
             'sort',
             'create_time:datetime',
             'update_time:datetime',
