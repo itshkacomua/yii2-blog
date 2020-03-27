@@ -1,4 +1,4 @@
-Change Log: `yii2-link`
+Change Log: `yii2-blog`
 =================================
 
 ## version 1.0.2
