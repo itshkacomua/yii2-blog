@@ -20,6 +20,7 @@ use yii\web\UploadedFile;
  * @property string $alias
  * @property string $image
  * @property int $status_id
+ * @property int $language_id
  * @property int $sort
  * @property int $create_time
  * @property int $update_time
@@ -58,6 +59,7 @@ class Blog extends \yii\db\ActiveRecord
             [['image'], 'string', 'max' => 100],
             [['file'], 'image'],
             ['language_id', 'default', 'value' => 1],
+            ['image', 'default', 'value' => ''],
             [['tags_array', 'create_time', 'update_time'], 'safe'],
         ];
     }
@@ -141,7 +143,7 @@ class Blog extends \yii\db\ActiveRecord
     public function getSmallImage()
     {
         if ($this->image) {
-            $path = str_replace('admin','',Url::home(true))  . 'uploads/images/blog/50x50/'.$this->image;
+            $path = str_replace('admin','',Url::home(true))  . 'uploads/images/blog/170x/'.$this->image;
         } else {
             $path = str_replace('admin','',Url::home(true))  . 'uploads/images/nophoto.png';
         }
