@@ -26,9 +26,10 @@ use yii\web\UploadedFile;
  */
 class Blog extends \yii\db\ActiveRecord
 {
+    public const GET_ID_BY_URL = [1 => 'Русский', 2 => 'Украинский', 3 => 'Английский'];
     const STATUS_LIST = ['off','on'];
     const IMAGES_SIZE = [
-        ['50','50'],
+        ['170',null],
         ['800',null],
     ];
     public $tags_array;
@@ -52,10 +53,11 @@ class Blog extends \yii\db\ActiveRecord
             [['text'], 'string'],
             [['alias'], 'unique'],
             [['status_id', 'sort'], 'integer'],
-            [['sort'], 'integer', 'min' => 1, 'max' => 99],
+            [['sort', 'language_id'], 'integer', 'min' => 1, 'max' => 99],
             [['title', 'alias'], 'string', 'max' => 255],
             [['image'], 'string', 'max' => 100],
             [['file'], 'image'],
+            ['language_id', 'default', 'value' => 1],
             [['tags_array', 'create_time', 'update_time'], 'safe'],
         ];
     }
@@ -95,6 +97,8 @@ class Blog extends \yii\db\ActiveRecord
             'create_time' => Yii::t('app', 'Время добавления'),
             'update_time' => Yii::t('app', 'Время обновления'),
             'image' => Yii::t('app', 'Изображение'),
+            'file' => Yii::t('app', 'Изображение'),
+            'language_id' => Yii::t('app', 'Язык'),
         ];
     }
 
@@ -145,6 +149,28 @@ class Blog extends \yii\db\ActiveRecord
         return $path;
     }
 
+    public function getMidleImage()
+    {
+        if ($this->image) {
+            $path = str_replace('admin','',Url::home(true))  . 'uploads/images/blog/800/'.$this->image;
+        } else {
+            $path = str_replace('admin','',Url::home(true))  . 'uploads/images/nophoto.png';
+        }
+
+        return $path;
+    }
+
+    public function getBigImage()
+    {
+        if ($this->image) {
+            $path = str_replace('admin','',Url::home(true))  . 'uploads/images/blog/'.$this->image;
+        } else {
+            $path = str_replace('admin','',Url::home(true))  . 'uploads/images/nophoto.png';
+        }
+
+        return $path;
+    }
+
     public function afterFind()
     {
         parent::afterFind();
@@ -160,8 +186,8 @@ class Blog extends \yii\db\ActiveRecord
             if (file_exists($dir.$this->image)) {
                 unlink($dir.$this->image);
             }
-            if(file_exists($dir.'50x50/'.$this->image)) {
-                unlink($dir.'50x50/'.$this->image);
+            if(file_exists($dir.'170x/'.$this->image)) {
+                unlink($dir.'170x/'.$this->image);
             }
             if(file_exists($dir.'800x/'.$this->image)) {
                 unlink($dir.'800x/'.$this->image);
@@ -170,9 +196,8 @@ class Blog extends \yii\db\ActiveRecord
             $file->saveAs($dir . $this->image);
             $imag = Yii::$app->image->load($dir.$this->image);
             $imag->background('#fff',0);
-            $imag->resize('50','50', Yii\image\drivers\Image::INVERSE);
-            $imag->crop('50','50');
-            $imag->save($dir.'50x50/'.$this->image, 90);
+            $imag->resize('170',null, Yii\image\drivers\Image::INVERSE);
+            $imag->save($dir.'170x/'.$this->image, 90);
             $imag = Yii::$app->image->load($dir.$this->image);
             $imag->background('#fff',0);
             $imag->resize('800',null, Yii\image\drivers\Image::INVERSE);
@@ -224,6 +249,36 @@ class Blog extends \yii\db\ActiveRecord
             return true;
         } else {
             return false;
+        }
+    }
+
+    public function imageDelete($id)
+    {
+        $model = Blog::findOne($id);
+        $dir = Yii::getAlias('@images') . '/blog/';
+        if (file_exists($dir . $model->image)) {
+            unlink($dir . $model->image);
+        }
+
+        foreach (self::IMAGES_SIZE as $size) {
+            $size_dir = $size[0] . 'x';
+            if ($size[1] !== null) {
+                $size_dir .= $size[1];
+            }
+
+            if (file_exists($dir . $size_dir . '/' . $model->image)) {
+                unlink($dir . $size_dir . '/' . $model->image);
+            }
+        }
+
+        if (!empty($model)) {
+            $model->image = '';
+
+            if ($model->save()) {
+                return true;
+            }
+        } else {
+            return \Yii::t('content', 'An error has occurred');
         }
     }
 }

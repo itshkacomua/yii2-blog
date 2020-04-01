@@ -25,8 +25,29 @@ class BlogController extends Controller
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
-                    'delete-image' => ['POST'],
-                    'sort-image' => ['POST'],
+                ],
+            ],
+            'access' => [
+                'class' => \yii\filters\AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => [
+                            'create',
+                            'view',
+                            'update',
+                            'delete',
+                            'image-delete'
+                        ],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                    [
+                        'actions' => [
+                            'index',
+                        ],
+                        'allow' => true,
+                        'roles' => ['?','@'],
+                    ],
                 ],
             ],
         ];
@@ -132,5 +153,14 @@ class BlogController extends Controller
     public function actionTime()
     {
 
+    }
+
+    public function actionImageDelete()
+    {
+        if (Yii::$app->request->isPost && !Yii::$app->user->isGuest) {
+            $post = Yii::$app->request->post();
+            return Blog::imageDelete($post['id']);
+        }
+        return \Yii::t('content', 'An error has occurred');
     }
 }

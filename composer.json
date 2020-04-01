@@ -14,7 +14,6 @@
     "yiisoft/yii2": "~2.0.0",
     "kartik-v/yii2-widget-select2": "@dev",
     "yurkinx/yii2-image": "^1.2",
-    "kartik-v/yii2-widget-fileinput": "@dev"
   },
   "autoload": {
     "psr-4": {
